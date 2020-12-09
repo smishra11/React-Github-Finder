@@ -10,7 +10,7 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 
 class Github extends Component {
   render() {
-    const { profileData } = this.props;
+    const { profileData, reposData } = this.props;
     return (
       <>
         <Container className="mt-3">
@@ -77,25 +77,34 @@ class Github extends Component {
         </Container>
         <Container>
           <h3 className="mb-3 mt-3 ml-3 font-weight-bold">
-            <i>Latest Repos</i>
+            <i>Latest Repos :</i>
           </h3>
-          <Card>
-            <Card.Body className="mb-2">
-              <Row>
-                <Col sm={6}>
-                  <a href="#/" target="_blank">
-                    {/* ${repo.name} */}
-                    repo
-                  </a>
-                </Col>
-                <Col sm={6}>
-                  <Badge variant="primary">Stars:</Badge>
-                  <Badge variant="secondary">Watchers:</Badge>
-                  <Badge variant="success">Forks:</Badge>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
+          {reposData.map((repo) => {
+            return (
+              <Card className="mb-2" key={repo.id}>
+                <Card.Body className="mb-2">
+                  <Row>
+                    <Col sm={6}>
+                      <a href="#/" target="_blank">
+                        {repo.name}
+                      </a>
+                    </Col>
+                    <Col sm={6}>
+                      <Badge variant="primary">
+                        Stars: {repo.stargazers_count}
+                      </Badge>
+                      <Badge variant="secondary" className="ml-2">
+                        Watchers: {repo.watchers_count}
+                      </Badge>
+                      <Badge variant="success" className="ml-2">
+                        Forks: {repo.forks_count}
+                      </Badge>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            );
+          })}
         </Container>
       </>
     );

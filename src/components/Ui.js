@@ -11,26 +11,44 @@ class Ui extends Component {
     inputVal: '',
     isClicked: false,
     profileData: {},
+    reposData: [],
+    repos_count: 5,
+    repos_sort: 'created: asc',
   };
 
   inputAdded = (e) => {
     this.setState({ inputVal: e.target.value });
   };
 
-  btnClicked = () => {
+  getRepos = () => {
+    axios
+      .get(
+        `https://api.github.com/users/smishra11/repos?per_page=${this.state.repos_count}&sort=${this.state.repos_sort}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`
+      )
+      .then((res) => {
+        this.setState({ reposData: res.data });
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  btnClicked = async () => {
     if (!this.state.inputVal) {
       return;
     } else {
-      axios
+      await axios
         .get(
           `https://api.github.com/users/smishra11?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`
         )
         .then((res) => {
           this.setState({ profileData: res.data });
+          this.getRepos();
           console.log(this.state.profileData);
         })
         .catch((err) => {
-          console.log(err);
+          console.log(err.message);
         });
     }
     this.setState({ isClicked: true });
@@ -61,7 +79,10 @@ class Ui extends Component {
           </Card>
         </Container>
         {this.state.isClicked ? (
-          <Github profileData={this.state.profileData} />
+          <Github
+            profileData={this.state.profileData}
+            reposData={this.state.reposData}
+          />
         ) : null}
       </>
     );
