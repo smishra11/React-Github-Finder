@@ -5,6 +5,7 @@ import Github from './Github';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import Spinner from './spinner1.gif';
 
 class Ui extends Component {
   state = {
@@ -14,6 +15,8 @@ class Ui extends Component {
     reposData: [],
     repos_count: 5,
     repos_sort: 'created: asc',
+    isLoading: false,
+    // errMessage: '',
   };
 
   inputAdded = (e) => {
@@ -23,13 +26,14 @@ class Ui extends Component {
   getRepos = () => {
     axios
       .get(
-        `https://api.github.com/users/smishra11/repos?per_page=${this.state.repos_count}&sort=${this.state.repos_sort}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`
+        `https://api.github.com/users/${this.state.inputVal}/repos?per_page=${this.state.repos_count}&sort=${this.state.repos_sort}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`
       )
       .then((res) => {
         this.setState({ reposData: res.data });
         console.log(res.data);
       })
       .catch((err) => {
+        // this.setState({ errMessage: err.message });
         console.log(err.message);
       });
   };
@@ -38,20 +42,25 @@ class Ui extends Component {
     if (!this.state.inputVal) {
       return;
     } else {
+      this.setState({ isLoading: true });
       await axios
         .get(
-          `https://api.github.com/users/smishra11?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`
+          `https://api.github.com/users/${this.state.inputVal}?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`
         )
         .then((res) => {
-          this.setState({ profileData: res.data });
           this.getRepos();
+          this.setState({
+            profileData: res.data,
+            isClicked: true,
+            isLoading: false,
+          });
           console.log(this.state.profileData);
         })
         .catch((err) => {
+          // this.setState({ errMessage: err.message });
           console.log(err.message);
         });
     }
-    this.setState({ isClicked: true });
   };
 
   render() {
@@ -69,20 +78,26 @@ class Ui extends Component {
               placeholder="GitHub Username..."
               onChange={this.inputAdded}
             />
-            <Button
-              variant="secondary"
-              className="mt-3"
-              onClick={this.btnClicked}
-            >
+            <Button variant="dark" className="mt-3" onClick={this.btnClicked}>
               Search
             </Button>
           </Card>
         </Container>
         {this.state.isClicked ? (
-          <Github
-            profileData={this.state.profileData}
-            reposData={this.state.reposData}
-          />
+          this.state.isLoading ? (
+            <Container className="mt-3">
+              <Card>
+                <div className="loadingImg">
+                  <img src={Spinner} alt="loader" />
+                </div>
+              </Card>
+            </Container>
+          ) : (
+            <Github
+              profileData={this.state.profileData}
+              reposData={this.state.reposData}
+            />
+          )
         ) : null}
       </>
     );

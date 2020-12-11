@@ -34,37 +34,42 @@ class Github extends Component {
                 </Col>
                 <Col sm={9}>
                   <div className="d-flex">
-                    <h5>
-                      <Badge variant="primary">
-                        Public Repos: {profileData.public_repos}
-                      </Badge>
-                    </h5>
-                    <h5 className="ml-2">
-                      <Badge variant="secondary">
-                        Public Gists: {profileData.public_gists}
-                      </Badge>
-                    </h5>
-                    <h5 className="ml-2">
-                      <Badge variant="success">
-                        Followers: {profileData.followers}
-                      </Badge>
-                    </h5>
-                    <h5 className="ml-2">
-                      <Badge variant="info">
-                        Following: {profileData.following}
-                      </Badge>
-                    </h5>
+                    <Badge variant="primary" className="profileBadge">
+                      Public Repos: {profileData.public_repos}
+                    </Badge>
+                    <Badge variant="secondary" className="profileBadge ml-2">
+                      Public Gists: {profileData.public_gists}
+                    </Badge>
+                    <Badge variant="success" className="profileBadge ml-2">
+                      Followers: {profileData.followers}
+                    </Badge>
+                    <Badge variant="info" className="profileBadge ml-2">
+                      Following: {profileData.following}
+                    </Badge>
                   </div>
                   <br />
                   <ListGroup>
                     <ListGroupItem>
-                      Company: {profileData.company}
+                      Company:{' '}
+                      {profileData.company ? profileData.company : 'N/A'}
                     </ListGroupItem>
                     <ListGroupItem>
-                      Website/Blog: {profileData.blog}
+                      Website/Blog:{' '}
+                      {profileData.blog ? (
+                        <a
+                          target="_blank"
+                          rel="noreferrer"
+                          href={profileData.blog}
+                        >
+                          {profileData.blog}
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
                     </ListGroupItem>
                     <ListGroupItem>
-                      Location: {profileData.location}
+                      Location:{' '}
+                      {profileData.location ? profileData.location : 'N/A'}
                     </ListGroupItem>
                     <ListGroupItem>
                       Member Since: {profileData.created_at}
@@ -75,7 +80,7 @@ class Github extends Component {
             </Card.Body>
           </Card>
         </Container>
-        <Container>
+        <Container className="mb-3">
           <h3 className="mb-3 mt-3 ml-3 font-weight-bold">
             <i>Latest Repos :</i>
           </h3>
@@ -85,7 +90,7 @@ class Github extends Component {
                 <Card.Body className="mb-2">
                   <Row>
                     <Col sm={6}>
-                      <a href="#/" target="_blank">
+                      <a href={repo.html_url} target="_blank" rel="noreferrer">
                         {repo.name}
                       </a>
                     </Col>
