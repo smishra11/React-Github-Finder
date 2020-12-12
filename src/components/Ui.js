@@ -16,7 +16,6 @@ class Ui extends Component {
     repos_count: 5,
     repos_sort: 'created: asc',
     isLoading: false,
-    // errMessage: '',
   };
 
   inputAdded = (e) => {
@@ -33,7 +32,6 @@ class Ui extends Component {
         console.log(res.data);
       })
       .catch((err) => {
-        // this.setState({ errMessage: err.message });
         console.log(err.message);
       });
   };
@@ -42,7 +40,7 @@ class Ui extends Component {
     if (!this.state.inputVal) {
       return;
     } else {
-      this.setState({ isLoading: true });
+      this.setState({ isLoading: true, isClicked: true });
       await axios
         .get(
           `https://api.github.com/users/${this.state.inputVal}?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`
@@ -51,13 +49,12 @@ class Ui extends Component {
           this.getRepos();
           this.setState({
             profileData: res.data,
-            isClicked: true,
             isLoading: false,
           });
-          console.log(this.state.profileData);
+          console.log('response', this.state.profileData);
         })
         .catch((err) => {
-          // this.setState({ errMessage: err.message });
+          this.setState({ isLoading: false });
           console.log(err.message);
         });
     }
